@@ -1,0 +1,251 @@
+1 - Classe Artista 
+
+public class Artista {
+    private String nome;
+    private String genero;
+
+    public Artista(String nome, String genero) {
+        this.nome = nome;
+        this.genero = genero;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    @Override
+    public String toString() {
+        return nome + " (" + genero + ")";
+    }
+}
+
+2 -  Classe faixa 
+
+public class Faixa {
+    private String nome;
+
+    public Faixa(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+}
+
+3 - Classe Disco
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Disco {
+    private String titulo;
+    private int anoLancamento;
+    private List<Faixa> faixas;
+    private List<Artista> artistas;
+
+    public Disco(String titulo, int anoLancamento) {
+        this.titulo = titulo;
+        this.anoLancamento = anoLancamento;
+        this.faixas = new ArrayList<>();
+        this.artistas = new ArrayList<>();
+    }
+
+    public void adicionarFaixa(Faixa faixa) {
+        faixas.add(faixa);
+    }
+
+    public void adicionarArtista(Artista artista) {
+        artistas.add(artista);
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public int getAnoLancamento() {
+        return anoLancamento;
+    }
+
+    public List<Faixa> getFaixas() {
+        return faixas;
+    }
+
+    public List<Artista> getArtistas() {
+        return artistas;
+    }
+
+    @Override
+    public String toString() {
+        String artistasStr = "";
+        for (Artista artista : artistas) {
+            artistasStr += artista.getNome() + ", ";
+        }
+        return "Título: " + titulo + ", Ano: " + anoLancamento + ", Artistas: " + artistasStr;
+    }
+}
+
+4 - Classe CatalogoMusical
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class CatalogoMusical {
+    private List<Disco> discos;
+    private List<Artista> artistas;
+
+    public CatalogoMusical() {
+        discos = new ArrayList<>();
+        artistas = new ArrayList<>();
+    }
+
+    public void cadastrarArtista(String nome, String genero) {
+        Artista artista = new Artista(nome, genero);
+        artistas.add(artista);
+        System.out.println("Artista cadastrado com sucesso: " + artista);
+    }
+
+    public void cadastrarDisco(String titulo, int anoLancamento) {
+        Disco disco = new Disco(titulo, anoLancamento);
+        discos.add(disco);
+        System.out.println("Disco cadastrado com sucesso: " + disco);
+    }
+
+    public void adicionarFaixaNoDisco(int idDisco, String nomeFaixa) {
+        if (idDisco >= 0 && idDisco < discos.size()) {
+            Faixa faixa = new Faixa(nomeFaixa);
+            discos.get(idDisco).adicionarFaixa(faixa);
+            System.out.println("Faixa adicionada: " + nomeFaixa);
+        } else {
+            System.out.println("ID do disco inválido.");
+        }
+    }
+
+    public void associarArtistaADisco(int idDisco, int idArtista) {
+        if (idDisco >= 0 && idDisco < discos.size() && idArtista >= 0 && idArtista < artistas.size()) {
+            Artista artista = artistas.get(idArtista);
+            discos.get(idDisco).adicionarArtista(artista);
+            System.out.println("Artista associado ao disco.");
+        } else {
+            System.out.println("ID do disco ou artista inválido.");
+        }
+    }
+
+    public void listarDiscos() {
+        if (discos.isEmpty()) {
+            System.out.println("Não há discos cadastrados.");
+        } else {
+            for (int i = 0; i < discos.size(); i++) {
+                System.out.println(i + ". " + discos.get(i));
+                for (Faixa faixa : discos.get(i).getFaixas()) {
+                    System.out.println("   - Faixa: " + faixa.getNome());
+                }
+            }
+        }
+    }
+
+    public void removerDisco(int idDisco) {
+        if (idDisco >= 0 && idDisco < discos.size()) {
+            discos.remove(idDisco);
+            System.out.println("Disco removido com sucesso.");
+        } else {
+            System.out.println("ID do disco inválido.");
+        }
+    }
+
+    public void removerArtista(int idArtista) {
+        if (idArtista >= 0 && idArtista < artistas.size()) {
+            artistas.remove(idArtista);
+            System.out.println("Artista removido com sucesso.");
+        } else {
+            System.out.println("ID do artista inválido.");
+        }
+    }
+
+    public static void main(String[] args) {
+        CatalogoMusical catalogo = new CatalogoMusical();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Cadastrar Artista");
+            System.out.println("2. Cadastrar Disco");
+            System.out.println("3. Adicionar Faixa a Disco");
+            System.out.println("4. Associar Artista a Disco");
+            System.out.println("5. Listar Discos");
+            System.out.println("6. Remover Disco");
+            System.out.println("7. Remover Artista");
+            System.out.println("0. Sair");
+
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();  // Consome a quebra de linha
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Nome do Artista: ");
+                    String nomeArtista = scanner.nextLine();
+                    System.out.print("Gênero Musical: ");
+                    String generoArtista = scanner.nextLine();
+                    catalogo.cadastrarArtista(nomeArtista, generoArtista);
+                    break;
+                case 2:
+                    System.out.print("Título do Disco: ");
+                    String tituloDisco = scanner.nextLine();
+                    System.out.print("Ano de Lançamento: ");
+                    int anoDisco = scanner.nextInt();
+                    scanner.nextLine();  // Consome a quebra de linha
+                    catalogo.cadastrarDisco(tituloDisco, anoDisco);
+                    break;
+                case 3:
+                    System.out.print("ID do Disco: ");
+                    int idDisco = scanner.nextInt();
+                    scanner.nextLine();  // Consome a quebra de linha
+                    System.out.print("Nome da Faixa: ");
+                    String nomeFaixa = scanner.nextLine();
+                    catalogo.adicionarFaixaNoDisco(idDisco, nomeFaixa);
+                    break;
+                case 4:
+                    System.out.print("ID do Disco: ");
+                    int idDiscoAssoc = scanner.nextInt();
+                    System.out.print("ID do Artista: ");
+                    int idArtistaAssoc = scanner.nextInt();
+                    catalogo.associarArtistaADisco(idDiscoAssoc, idArtistaAssoc);
+                    break;
+                case 5:
+                    catalogo.listarDiscos();
+                    break;
+                case 6:
+                    System.out.print("ID do Disco a Remover: ");
+                    int idDiscoRemover = scanner.nextInt();
+                    catalogo.removerDisco(idDiscoRemover);
+                    break;
+                case 7:
+                    System.out.print("ID do Artista a Remover: ");
+                    int idArtistaRemover = scanner.nextInt();
+                    catalogo.removerArtista(idArtistaRemover);
+                    break;
+                case 0:
+                    System.out.println("Saindo...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+}
+
+
+
+
